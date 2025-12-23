@@ -1,0 +1,46 @@
+Business Source License 1.1
+
+License text copyright (c) 2017 MariaDB Corporation Ab.
+
+Licensor:
+Velocity BPA, LLC
+https://velobpa.com
+
+Licensed Work:
+This repository and all source code, documentation, and associated artifacts
+contained herein, including all n8n community nodes published by Velocity BPA.
+
+Additional Use Grant:
+You may use, modify, and run the Licensed Work free of charge for:
+- Personal use
+- Educational use
+- Research use
+- Internal business use, provided such use does not involve resale,
+  redistribution, or offering the Licensed Work as part of a commercial
+  product or service.
+
+Commercial Use Restriction:
+Commercial Use of the Licensed Work is prohibited without a valid
+Commercial License issued by the Licensor.
+
+Commercial Use includes, but is not limited to:
+- Use of the Licensed Work within any Software-as-a-Service (SaaS),
+  Platform-as-a-Service (PaaS), or hosted application that is sold,
+  licensed, or monetized in any form
+- Offering the Licensed Work as part of a managed services engagement
+- Bundling or redistributing the Licensed Work with a paid product
+- Reselling, sublicensing, or white-labeling the Licensed Work
+- Embedding the Licensed Work into any commercial automation platform,
+  integration product, or solution offering
+
+Change Date:
+January 1, 2030
+
+Change License:
+Apache License, Version 2.0
+
+For commercial licensing inquiries:
+licensing@velobpa.com
+
+Business Source License 1.1 full text:
+https://mariadb.com/bsl11/
