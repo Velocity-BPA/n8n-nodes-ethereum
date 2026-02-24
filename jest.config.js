@@ -1,21 +1,24 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
+/*
+ * Copyright (c) 2026 Velocity BPA, LLC
+ * Licensed under the Business Source License 1.1
+ */
+
 module.exports = {
-	preset: 'ts-jest',
-	testEnvironment: 'node',
-	roots: ['<rootDir>/src/', '<rootDir>/nodes/', '<rootDir>/credentials/'],
-	testMatch: ['**/*.test.ts', '**/*.spec.ts'],
-	passWithNoTests: true,
-	collectCoverageFrom: [
-		'src/**/*.ts',
-		'!src/**/*.d.ts',
-		'!src/**/index.ts',
-	],
-	coverageDirectory: 'coverage',
-	coverageReporters: ['text', 'lcov'],
-	moduleNameMapper: {
-		'^@transport/(.*)$': '<rootDir>/src/transport/$1',
-		'^@utils/(.*)$': '<rootDir>/src/utils/$1',
-		'^@types/(.*)$': '<rootDir>/src/types/$1',
-		'^@operations/(.*)$': '<rootDir>/src/operations/$1',
-	},
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testMatch: ['**/test/**/*.test.ts'],
+  collectCoverageFrom: [
+    'nodes/**/*.ts',
+    'credentials/**/*.ts',
+    '!**/*.d.ts',
+    '!**/index.ts',
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html'],
+  moduleFileExtensions: ['ts', 'js', 'json'],
+  roots: ['<rootDir>'],
+  transform: {
+    '^.+\.ts$': 'ts-jest',
+  },
+  testTimeout: 30000,
 };
