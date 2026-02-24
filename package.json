@@ -1,47 +1,18 @@
 {
   "name": "n8n-nodes-ethereum",
-  "version": "0.1.0",
-  "description": "n8n community nodes for Ethereum blockchain operations - accounts, transactions, smart contracts, ERC-20/721/1155 tokens, ENS, and real-time event monitoring",
-  "keywords": [
-    "n8n-community-node-package",
-    "n8n",
-    "ethereum",
-    "blockchain",
-    "web3",
-    "defi",
-    "smart-contracts",
-    "erc20",
-    "erc721",
-    "nft",
-    "ens"
-  ],
-  "license": "BUSL-1.1",
-  "homepage": "https://github.com/Velocity-BPA/n8n-nodes-ethereum",
-  "author": {
-    "name": "Velocity BPA",
-    "url": "https://velobpa.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Velocity-BPA/n8n-nodes-ethereum.git"
-  },
+  "version": "1.0.0",
+  "description": "n8n community node for Ethereum",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "main": "dist/nodes/Ethereum/Ethereum.node.js",
   "engines": {
     "node": ">=18.0.0"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "tsc && gulp build:icons",
-    "dev": "tsc --watch",
-    "lint": "eslint nodes credentials src --ext .ts",
-    "lintfix": "eslint nodes credentials src --ext .ts --fix",
-    "format": "prettier --write \"**/*.ts\"",
-    "test": "jest",
-    "prepublishOnly": "npm run build"
-  },
+  "packageManager": "pnpm@9.1.4",
   "files": [
-    "dist"
+    "dist/**/*"
+  ],
+  "keywords": [
+    "n8n-community-node-package"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,
@@ -49,29 +20,37 @@
       "dist/credentials/EthereumApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Ethereum/Ethereum.node.js",
-      "dist/nodes/Ethereum/EthereumTrigger.node.js"
+      "dist/nodes/Ethereum/Ethereum.node.js"
     ]
   },
   "dependencies": {
-    "ethers": "^6.9.0"
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.0",
+    "gulp": "^4.0.2",
+    "jest": "^29.5.0",
+    "n8n-workflow": "*",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "~5.2.2"
   },
   "peerDependencies": {
     "n8n-workflow": "*"
   },
-  "devDependencies": {
-    "@types/jest": "^29.5.11",
-    "@types/node": "^20.10.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.15.0",
-    "eslint": "^8.55.0",
-    "eslint-config-prettier": "^9.1.0",
-    "gulp": "^4.0.2",
-    "jest": "^29.7.0",
-    "n8n-workflow": "*",
-    "prettier": "^3.1.0",
-    "rimraf": "^5.0.5",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.3.0"
+  "scripts": {
+    "build": "tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "lint": "eslint nodes credentials package.json",
+    "lintfix": "eslint nodes credentials package.json --fix",
+    "format": "prettier nodes credentials --write",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "prepublishOnly": "npm run build"
   }
 }
