@@ -1,11 +1,5 @@
 # n8n-nodes-ethereum
 
-Comprehensive n8n community nodes for Ethereum and EVM-compatible blockchain operations.
-
-![n8n-nodes-ethereum](https://img.shields.io/npm/v/n8n-nodes-ethereum)
-![License](https://img.shields.io/badge/license-BUSL--1.1-blue)
-
-> [!IMPORTANT]
 > **[Velocity BPA Licensing Notice]**
 >
 > This n8n node is licensed under the Business Source License 1.1 (BSL 1.1).
@@ -14,292 +8,208 @@ Comprehensive n8n community nodes for Ethereum and EVM-compatible blockchain ope
 >
 > For licensing information, visit https://velobpa.com/licensing or contact licensing@velobpa.com.
 
+This n8n community node provides comprehensive Ethereum blockchain integration with 7 resources including Account, Transaction, SmartContract, Block, Token, NFT, and ENS operations, enabling automated blockchain interactions, DeFi workflows, and Web3 data processing within your n8n automations.
+
+![n8n Community Node](https://img.shields.io/badge/n8n-Community%20Node-blue)
+![License](https://img.shields.io/badge/license-BSL--1.1-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
+![Ethereum](https://img.shields.io/badge/Ethereum-Compatible-627EEA)
+![Web3](https://img.shields.io/badge/Web3-Ready-F16822)
+![DeFi](https://img.shields.io/badge/DeFi-Enabled-9C27B0)
+
 ## Features
 
-### 🔗 Multi-Network Support
-- **Ethereum**: Mainnet, Sepolia, Goerli, Holesky
-- **Layer 2**: Arbitrum, Optimism, Base (+ testnets)
-- **Other EVM**: Polygon, Avalanche, BNB Chain (+ testnets)
-- **Custom**: Any EVM-compatible chain
-
-### 🔌 RPC Providers
-- Alchemy, Infura, Ankr, QuickNode
-- Public endpoints (rate limited)
-- Custom RPC URLs
-
-### 📦 Operations
-
-#### Account
-- Get ETH balance
-- Get transaction nonce
-- Get bytecode (contract detection)
-- Get wallet info
-
-#### Transactions
-- Send ETH
-- Get transaction details
-- Get transaction receipt
-- Wait for confirmations
-- Estimate gas
-- Speed up pending transactions
-- Cancel pending transactions
-
-#### Smart Contracts
-- Read contract state (view functions)
-- Write to contracts (state-changing)
-- Deploy contracts
-- Query past events
-- Encode/decode function data
-
-#### ERC-20 Tokens
-- Get token info (name, symbol, decimals)
-- Get token balance
-- Transfer tokens
-- Approve spender
-- Check allowance
-- Transfer from approved address
-- Revoke approvals
-
-#### ERC-721 NFTs
-- Get NFT info with metadata
-- Get NFT owner
-- Get NFT balance
-- Transfer NFTs
-- Approve operators
-- Set approval for all
-
-#### ERC-1155 Multi-Tokens
-- Get balance
-- Get batch balances
-- Transfer tokens
-- Batch transfer
-
-#### ENS (Ethereum Name Service)
-- Resolve name to address
-- Reverse lookup (address to name)
-- Get avatar
-- Get full ENS record
-- Get text records
-
-#### Network
-- Get block number
-- Get block details
-- Get gas price
-- Get EIP-1559 fee data
-- Get network info
-- Query event logs
-
-### ⚡ Trigger Node
-- **New Block**: Trigger on each new block
-- **Contract Event**: Listen for specific contract events
-- **Address Activity**: Monitor ETH sends/receives
-- **Token Transfer**: Watch ERC-20 transfers
-- **NFT Transfer**: Watch ERC-721 transfers
+- **Account Management** - Get account balances, transaction history, and manage wallet operations
+- **Transaction Processing** - Send transactions, check status, estimate gas fees, and monitor confirmations
+- **Smart Contract Integration** - Deploy contracts, call functions, read contract state, and listen for events
+- **Block Operations** - Retrieve block data, analyze blockchain metrics, and track network statistics
+- **Token Operations** - Handle ERC-20 tokens, check balances, transfers, and allowances
+- **NFT Support** - Manage ERC-721/ERC-1155 tokens, metadata retrieval, and ownership tracking
+- **ENS Resolution** - Resolve Ethereum Name Service domains, reverse lookups, and registration management
+- **Multi-Network Support** - Compatible with Ethereum mainnet, testnets, and Layer 2 solutions
 
 ## Installation
 
-### Via n8n Community Nodes (Recommended)
+### Community Nodes (Recommended)
 
-1. Go to **Settings** > **Community Nodes**
-2. Click **Install a community node**
-3. Enter `n8n-nodes-ethereum`
-4. Click **Install**
+1. Open n8n
+2. Go to **Settings** → **Community Nodes**
+3. Click **Install a community node**
+4. Enter `n8n-nodes-ethereum`
+5. Click **Install**
 
-### Manual Installation (Self-Hosted n8n)
+### Manual Installation
 
-**One-time setup** - add to your `~/.zshrc` or `~/.bashrc`:
 ```bash
-mkdir -p ~/.n8n/nodes
-echo 'export N8N_CUSTOM_EXTENSIONS=~/.n8n/nodes' >> ~/.zshrc
-source ~/.zshrc
+cd ~/.n8n
+npm install n8n-nodes-ethereum
 ```
 
-**Install the package:**
+### Development Installation
+
 ```bash
-# Clone and build
 git clone https://github.com/Velocity-BPA/n8n-nodes-ethereum.git
 cd n8n-nodes-ethereum
 npm install
 npm run build
-
-# Copy to n8n nodes directory
-cp -r . ~/.n8n/nodes/n8n-nodes-ethereum
-
-# Install dependencies in copied location
-cd ~/.n8n/nodes/n8n-nodes-ethereum
-npm install
-
-# Copy icon to dist
-cp nodes/Ethereum/ethereum.svg dist/nodes/Ethereum/
-
-# Start n8n
+mkdir -p ~/.n8n/custom
+ln -s $(pwd) ~/.n8n/custom/n8n-nodes-ethereum
 n8n start
 ```
 
-## Configuration
+## Credentials Setup
 
-### Credentials Setup
+| Field | Description | Required |
+|-------|-------------|----------|
+| **RPC URL** | Ethereum RPC endpoint (Infura, Alchemy, or custom node) | Yes |
+| **API Key** | API key for your RPC provider | Yes |
+| **Private Key** | Private key for transaction signing (optional) | No |
+| **Network** | Network name (mainnet, goerli, sepolia, polygon, etc.) | Yes |
+| **Gas Price Strategy** | Auto, fast, standard, or custom gas pricing | No |
 
-1. Create new **Ethereum API** credentials
-2. Select your **Network** (Mainnet, Sepolia, etc.)
-3. Choose your **RPC Provider**:
-   - **Public**: Free, rate-limited (good for testing)
-   - **Alchemy/Infura/Ankr**: Add your API key
-   - **Custom**: Enter your own RPC URL
-4. Configure **Wallet** (optional, for transactions):
-   - **None**: Read-only access
-   - **Private Key**: Direct key input
-   - **Mnemonic**: Seed phrase with derivation path
+## Resources & Operations
 
-### Security Best Practices
+### 1. Account
 
-- ⚠️ **Never commit credentials** to version control
-- 🔐 Use **testnet first** before mainnet
-- 💰 Keep minimal funds in automation wallets
-- 🔑 Use dedicated wallets for automation (not personal)
-- 📝 Consider using **read-only** mode when possible
+| Operation | Description |
+|-----------|-------------|
+| **Get Balance** | Retrieve ETH balance for an address |
+| **Get Transaction History** | Fetch transaction history for an account |
+| **Get Nonce** | Get the current nonce for an address |
+| **Create Account** | Generate a new Ethereum account |
+| **Import Account** | Import account from private key or mnemonic |
+
+### 2. Transaction
+
+| Operation | Description |
+|-----------|-------------|
+| **Send Transaction** | Send ETH or contract transactions |
+| **Get Transaction** | Retrieve transaction details by hash |
+| **Get Receipt** | Get transaction receipt and status |
+| **Estimate Gas** | Estimate gas costs for transactions |
+| **Get Pending** | List pending transactions |
+| **Cancel Transaction** | Cancel pending transaction with higher gas |
+
+### 3. SmartContract
+
+| Operation | Description |
+|-----------|-------------|
+| **Deploy Contract** | Deploy new smart contract |
+| **Call Function** | Execute contract function (read/write) |
+| **Get Events** | Retrieve contract event logs |
+| **Get ABI** | Fetch contract ABI from verified contracts |
+| **Verify Contract** | Verify contract source code |
+| **Get Storage** | Read contract storage slots |
+
+### 4. Block
+
+| Operation | Description |
+|-----------|-------------|
+| **Get Block** | Retrieve block data by number or hash |
+| **Get Latest Block** | Get the most recent block |
+| **Get Block Range** | Fetch multiple blocks in range |
+| **Get Uncle Blocks** | Retrieve uncle/ommer blocks |
+| **Get Block Stats** | Get network statistics and metrics |
+
+### 5. Token
+
+| Operation | Description |
+|-----------|-------------|
+| **Get Balance** | Check ERC-20 token balance |
+| **Transfer** | Send tokens to another address |
+| **Get Allowance** | Check spending allowance |
+| **Approve** | Set spending allowance |
+| **Get Token Info** | Retrieve token metadata (name, symbol, decimals) |
+| **Get Transfers** | List token transfer history |
+
+### 6. Nft
+
+| Operation | Description |
+|-----------|-------------|
+| **Get NFT** | Retrieve NFT metadata and ownership |
+| **Transfer NFT** | Transfer NFT to another address |
+| **Get Collection** | List NFTs in a collection |
+| **Get Owner NFTs** | Get all NFTs owned by address |
+| **Approve NFT** | Approve NFT for transfer |
+| **Set Approval For All** | Set collection-wide approval |
+
+### 7. Ens
+
+| Operation | Description |
+|-----------|-------------|
+| **Resolve Name** | Resolve ENS name to address |
+| **Reverse Lookup** | Get ENS name from address |
+| **Get Records** | Fetch ENS text records |
+| **Set Records** | Update ENS text records |
+| **Register Name** | Register new ENS domain |
+| **Renew Name** | Extend ENS registration |
 
 ## Usage Examples
 
-### Get ETH Balance
-
-```
-Ethereum Node
-├── Resource: Account
-├── Operation: Get Balance
-└── Address: vitalik.eth
-```
-
-### Transfer ERC-20 Tokens
-
-```
-Ethereum Node
-├── Resource: Token (ERC-20)
-├── Operation: Transfer
-├── Contract Address: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 (USDC)
-├── To Address: 0x...
-└── Amount: 100
+```javascript
+// Get ETH balance for an address
+{
+  "resource": "account",
+  "operation": "getBalance",
+  "address": "0x742d35Cc6634C0532925a3b8D4d8d6E8ba46a3c7",
+  "blockTag": "latest"
+}
 ```
 
-### Monitor Token Transfers
-
-```
-Ethereum Trigger
-├── Event: Token Transfer
-├── Token Address: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
-├── Filter By: To Address
-└── Filter Address: 0x...  (your address)
-```
-
-### Read Smart Contract
-
-```
-Ethereum Node
-├── Resource: Smart Contract
-├── Operation: Read Contract
-├── Contract Address: 0x...
-├── ABI: [{"name": "balanceOf", "type": "function", ...}]
-├── Function Name: balanceOf
-└── Function Arguments: ["0x..."]
+```javascript
+// Send ERC-20 token transfer
+{
+  "resource": "token",
+  "operation": "transfer",
+  "contractAddress": "0xA0b86a33E6441c41C7c31bc5a9F2d3CB7D7bcf8a",
+  "to": "0x8ba1f109551bD432803012645Hac136c",
+  "amount": "100.5",
+  "from": "0x742d35Cc6634C0532925a3b8D4d8d6E8ba46a3c7"
+}
 ```
 
-## Common Token Addresses (Mainnet)
-
-| Token | Address |
-|-------|---------|
-| USDC | `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48` |
-| USDT | `0xdAC17F958D2ee523a2206206994597C13D831ec7` |
-| DAI | `0x6B175474E89094C44Da98b954EeaadDFE44fD05251` |
-| WETH | `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2` |
-| WBTC | `0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599` |
-| LINK | `0x514910771AF9Ca656af840dff83E8264EcF986CA` |
-
-## Development
-
-### Setup
-
-```bash
-npm install
-npm run build
+```javascript
+// Call smart contract function
+{
+  "resource": "smartContract",
+  "operation": "callFunction",
+  "contractAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+  "functionName": "balanceOf",
+  "parameters": ["0x742d35Cc6634C0532925a3b8D4d8d6E8ba46a3c7"],
+  "abi": [...contractAbi]
+}
 ```
 
-### Commands
-
-| Command | Description |
-|---------|-------------|
-| `npm run build` | Build TypeScript + icons |
-| `npm run dev` | Watch mode |
-| `npm run lint` | Run ESLint |
-| `npm run lintfix` | Fix ESLint issues |
-| `npm run format` | Format with Prettier |
-| `npm test` | Run tests |
-
-### Project Structure
-
-```
-n8n-nodes-ethereum/
-├── credentials/
-│   └── EthereumApi.credentials.ts
-├── nodes/
-│   └── Ethereum/
-│       ├── Ethereum.node.ts
-│       ├── EthereumTrigger.node.ts
-│       └── ethereum.svg
-├── src/
-│   ├── transport/          # Connection management
-│   ├── types/              # TypeScript definitions
-│   ├── utils/              # Helpers & formatters
-│   └── operations/
-│       ├── account/
-│       ├── transaction/
-│       ├── contract/
-│       ├── token/
-│       ├── nft/
-│       ├── ens/
-│       └── network/
-└── package.json
+```javascript
+// Resolve ENS name
+{
+  "resource": "ens",
+  "operation": "resolveName",
+  "ensName": "vitalik.eth",
+  "recordType": "address"
+}
 ```
 
 ## Error Handling
 
-The node supports n8n's **Continue On Fail** option. When enabled:
-- Failed operations return `{ error: "message" }`
-- Workflow continues to next item
-- Useful for batch operations
+| Error | Description | Solution |
+|-------|-------------|----------|
+| **Invalid RPC URL** | RPC endpoint is unreachable or invalid | Verify RPC URL and API key are correct |
+| **Insufficient Funds** | Account lacks ETH for gas fees | Add ETH to account or reduce gas limit |
+| **Transaction Reverted** | Smart contract execution failed | Check contract function parameters and state |
+| **Nonce Too Low** | Transaction nonce is outdated | Use current account nonce or wait for pending transactions |
+| **Gas Price Too Low** | Transaction not mined due to low gas | Increase gas price or use network suggested price |
+| **Rate Limited** | Too many API requests | Implement delays or upgrade RPC provider plan |
 
-## Contributing
+## Development
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run `npm run lint` and `npm test`
-5. Submit a pull request
-
-## Changelog
-
-### v0.1.0
-- Initial release
-- Full account, transaction, contract operations
-- ERC-20, ERC-721, ERC-1155 support
-- ENS integration
-- Trigger node for events
-- Multi-network support
-
-## License
-
-This n8n community node is licensed under the **Business Source License 1.1**.
-
-### Free Use
-Permitted for personal, educational, research, and internal business use.
-
-### Commercial Use
-Use of this node within any SaaS, PaaS, hosted platform, managed service,
-or paid automation offering requires a commercial license.
-
-For licensing inquiries:
-**licensing@velobpa.com**
-
-See [LICENSE](LICENSE), [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md), and [LICENSING_FAQ.md](LICENSING_FAQ.md) for details.
+```bash
+npm install
+npm run build
+npm test
+npm run lint
+npm run dev
+```
 
 ## Author
 
@@ -307,8 +217,32 @@ See [LICENSE](LICENSE), [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md), and [LIC
 - Website: [velobpa.com](https://velobpa.com)
 - GitHub: [Velocity-BPA](https://github.com/Velocity-BPA)
 
+## Licensing
+
+This n8n community node is licensed under the **Business Source License 1.1**.
+
+### Free Use
+Permitted for personal, educational, research, and internal business use.
+
+### Commercial Use
+Use of this node within any SaaS, PaaS, hosted platform, managed service, or paid automation offering requires a commercial license.
+
+For licensing inquiries: **licensing@velobpa.com**
+
+See [LICENSE](LICENSE), [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md), and [LICENSING_FAQ.md](LICENSING_FAQ.md) for details.
+
+## Contributing
+
+Contributions are welcome! Please ensure:
+
+1. Code follows existing style conventions
+2. All tests pass (`npm test`)
+3. Linting passes (`npm run lint`)
+4. Documentation is updated for new features
+5. Commit messages are descriptive
+
 ## Support
 
-- 📖 [Documentation](https://github.com/Velocity-BPA/n8n-nodes-ethereum)
-- 🐛 [Issue Tracker](https://github.com/Velocity-BPA/n8n-nodes-ethereum/issues)
-- 💬 [Discussions](https://github.com/Velocity-BPA/n8n-nodes-ethereum/discussions)
+- **Issues**: [GitHub Issues](https://github.com/Velocity-BPA/n8n-nodes-ethereum/issues)
+- **Ethereum Documentation**: [ethereum.org/developers](https://ethereum.org/developers/)
+- **Web3.js Guide**: [web3js.readthedocs.io](https://web3js.readthedocs.io/)
