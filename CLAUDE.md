@@ -1,10 +1,7 @@
-# CLAUDE.md
-
-> Instructions for Claude Code when working on this n8n community node.
+# CLAUDE.md — n8n Community Node Development
 
 ## Project Context
-
-This is an n8n community node package published to npm and the n8n marketplace. It follows the n8n-nodes-starter template structure with TypeScript, credentials, and node definitions.
+This is an n8n community node package for **Ethereum** published to npm and the n8n marketplace. It follows the n8n-nodes-starter template structure with TypeScript, credentials, and node definitions.
 
 ## Quick Reference
 
@@ -18,10 +15,13 @@ npm run build
 # Lint the code
 npm run lint
 
+# Run tests
+npm test
+
 # Run in development (link to local n8n)
 npm link
 cd ~/.n8n/custom
-npm link n8n-nodes-<n>
+npm link n8n-nodes-ethereum
 ```
 
 ## Project Structure
@@ -29,11 +29,9 @@ npm link n8n-nodes-<n>
 ```
 ├── credentials/          # API credentials definitions
 ├── nodes/               # Node implementations
-│   └── <NodeName>/
-│       ├── <NodeName>.node.ts
-│       ├── <NodeName>.node.json   # Codex metadata
-│       └── actions/              # Resource/operation handlers
-├── src/                 # Shared utilities and transport
+│   └── Ethereum/
+│       └── Ethereum.node.ts
+├── test/                # Jest test files
 └── package.json         # Node registration in n8n.nodes/credentials
 ```
 
@@ -84,12 +82,6 @@ npm link n8n-nodes-<n>
 5. **Document Results**: Add review section to `tasks/todo.md`
 6. **Capture Lessons**: Update `tasks/lessons.md` after corrections
 
-## Core Principles
-
-- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
-- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
-- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
-
 ## n8n Node Development Rules
 
 ### Node Structure
@@ -107,12 +99,19 @@ npm link n8n-nodes-<n>
 - Use `NodeApiError` for API errors with proper context
 - Use `NodeOperationError` for operation-specific errors
 - Always include `itemIndex` when available for error context
+- Use `catch (error: any)` pattern for TypeScript compatibility
 
 ### Code Style
 - Use TypeScript strict mode
 - Follow n8n naming conventions (PascalCase for nodes, camelCase for operations)
 - Document operations with `description` fields
 - Use `displayOptions` to show/hide fields conditionally
+
+## Core Principles
+
+- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+- **Minimal Impact**: Changes should only touch what's necessary. Avoid introducing bugs.
 
 ## Publishing Checklist
 
