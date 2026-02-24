@@ -4,28 +4,50 @@ node_modules/
 # Build output
 dist/
 
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-npm-debug.log*
-
-# Environment
+# Environment variables
 .env
 .env.local
 .env.*.local
 
-# Test coverage
+# Testing
 coverage/
+*.lcov
 
-# Temp files
-*.tmp
-*.temp
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled JavaScript (exclude config files)
+*.js
+!jest.config.js
+!gulpfile.js
+!.eslintrc.js
+
+# TypeScript
+*.tsbuildinfo
