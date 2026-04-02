@@ -1,12 +1,9 @@
-import {
-	ICredentialType,
-	INodeProperties,
-} from 'n8n-workflow';
+import { ICredentialType, INodeProperties } from 'n8n-workflow';
 
 export class EthereumApi implements ICredentialType {
 	name = 'ethereumApi';
 	displayName = 'Ethereum API';
-	documentationUrl = 'ethereum';
+	documentationUrl = 'https://ethereum.org/en/developers/docs/apis/json-rpc/';
 	properties: INodeProperties[] = [
 		{
 			displayName: 'Provider',
@@ -31,18 +28,63 @@ export class EthereumApi implements ICredentialType {
 				},
 			],
 			default: 'infura',
-			required: true,
 		},
 		{
 			displayName: 'API Key',
 			name: 'apiKey',
 			type: 'string',
-			typeOptions: {
-				password: true,
-			},
+			typeOptions: { password: true },
 			default: '',
-			required: true,
-			description: 'The API key for your Ethereum provider',
+			displayOptions: {
+				show: {
+					provider: ['infura', 'alchemy', 'etherscan'],
+				},
+			},
+		},
+		{
+			displayName: 'API Base URL',
+			name: 'baseUrl',
+			type: 'string',
+			default: 'https://mainnet.infura.io/v3/',
+			displayOptions: {
+				show: {
+					provider: ['infura'],
+				},
+			},
+		},
+		{
+			displayName: 'API Base URL',
+			name: 'baseUrl',
+			type: 'string',
+			default: 'https://eth-mainnet.alchemyapi.io/v2/',
+			displayOptions: {
+				show: {
+					provider: ['alchemy'],
+				},
+			},
+		},
+		{
+			displayName: 'API Base URL',
+			name: 'baseUrl',
+			type: 'string',
+			default: 'https://api.etherscan.io/api',
+			displayOptions: {
+				show: {
+					provider: ['etherscan'],
+				},
+			},
+		},
+		{
+			displayName: 'RPC URL',
+			name: 'baseUrl',
+			type: 'string',
+			default: 'https://mainnet.infura.io/v3/YOUR_API_KEY',
+			placeholder: 'https://your-custom-rpc-endpoint.com',
+			displayOptions: {
+				show: {
+					provider: ['custom'],
+				},
+			},
 		},
 		{
 			displayName: 'Network',
@@ -61,25 +103,8 @@ export class EthereumApi implements ICredentialType {
 					name: 'Sepolia',
 					value: 'sepolia',
 				},
-				{
-					name: 'Polygon',
-					value: 'polygon',
-				},
 			],
 			default: 'mainnet',
-			required: true,
-		},
-		{
-			displayName: 'Custom RPC URL',
-			name: 'customRpcUrl',
-			type: 'string',
-			default: '',
-			displayOptions: {
-				show: {
-					provider: ['custom'],
-				},
-			},
-			description: 'Custom RPC endpoint URL',
 		},
 	];
 }
