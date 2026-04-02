@@ -41,7 +41,6 @@ export class Ethereum implements INodeType {
       },
     ],
     properties: [
-      // Resource selector
       {
         displayName: 'Resource',
         name: 'resource',
@@ -79,7 +78,6 @@ export class Ethereum implements INodeType {
         ],
         default: 'account',
       },
-      // Operation dropdowns per resource
 {
   displayName: 'Operation',
   name: 'operation',
@@ -114,6 +112,18 @@ export class Ethereum implements INodeType {
       value: 'getAccountTransactions',
       description: 'Get transaction list for account using Etherscan',
       action: 'Get account transactions',
+    },
+    {
+      name: 'Get Account Balance (Etherscan)',
+      value: 'getAccountBalance',
+      description: 'Get account balance via Etherscan',
+      action: 'Get account balance via Etherscan',
+    },
+    {
+      name: 'Get Multi Account Balance',
+      value: 'getMultiAccountBalance',
+      description: 'Get multiple account balances',
+      action: 'Get multiple account balances',
     },
   ],
   default: 'getBalance',
@@ -165,6 +175,18 @@ export class Ethereum implements INodeType {
       description: 'Get historical gas fee data',
       action: 'Get fee history',
     },
+    {
+      name: 'Get Priority Fee',
+      value: 'maxPriorityFeePerGas',
+      description: 'Get estimated priority fee per gas',
+      action: 'Get priority fee',
+    },
+    {
+      name: 'Get Transaction Status',
+      value: 'getTransactionStatus',
+      description: 'Check transaction execution status',
+      action: 'Get transaction status',
+    },
   ],
   default: 'sendRawTransaction',
 },
@@ -209,6 +231,18 @@ export class Ethereum implements INodeType {
       description: 'Get verified contract source code from Etherscan',
       action: 'Get contract source code',
     },
+    {
+      name: 'Get Storage At',
+      value: 'getStorageAt',
+      description: 'Get contract storage value at position',
+      action: 'Get storage value',
+    },
+    {
+      name: 'Verify Contract',
+      value: 'verifyContract',
+      description: 'Submit contract for verification',
+      action: 'Verify contract',
+    },
   ],
   default: 'call',
 },
@@ -252,6 +286,12 @@ export class Ethereum implements INodeType {
       value: 'getUncleByBlockNumberAndIndex',
       description: 'Get uncle block data',
       action: 'Get uncle by block number and index',
+    },
+    {
+      name: 'Get Block Reward',
+      value: 'getBlockReward',
+      description: 'Get block mining reward',
+      action: 'Get block reward',
     },
   ],
   default: 'getBlockByNumber',
@@ -385,10 +425,21 @@ export class Ethereum implements INodeType {
       description: 'Get ENS registration/transfer events',
       action: 'Get ENS events',
     },
+    {
+      name: 'Get Owner',
+      value: 'getOwner',
+      description: 'Get the owner of an ENS domain',
+      action: 'Get ENS owner',
+    },
+    {
+      name: 'Get Text Records',
+      value: 'getTextRecords',
+      description: 'Get text records for an ENS domain',
+      action: 'Get ENS text records',
+    },
   ],
   default: 'resolveName',
 },
-      // Parameter definitions
 {
   displayName: 'Account Address',
   name: 'address',
@@ -397,12 +448,27 @@ export class Ethereum implements INodeType {
   displayOptions: {
     show: {
       resource: ['account'],
-      operation: ['getBalance', 'getTransactionCount', 'getCode'],
+      operation: ['getBalance', 'getTransactionCount', 'getCode', 'getAccountTransactions', 'getAccountBalance'],
     },
   },
   default: '',
   description: 'The Ethereum account address (0x prefixed hex)',
   placeholder: '0x742Fc23Fa02644A08d83AbdAbB6d5d3B8301Fde4',
+},
+{
+  displayName: 'Addresses',
+  name: 'addresses',
+  type: 'string',
+  required: true,
+  displayOptions: {
+    show: {
+      resource: ['account'],
+      operation: ['getMultiAccountBalance'],
+    },
+  },
+  default: '',
+  placeholder: '0x...,0x...',
+  description: 'Comma-separated list of Ethereum addresses to query',
 },
 {
   displayName: 'Block Number',
@@ -417,21 +483,6 @@ export class Ethereum implements INodeType {
   default: 'latest',
   description: 'Block number to query (latest, earliest, pending, or hex value)',
   placeholder: 'latest',
-},
-{
-  displayName: 'Account Address',
-  name: 'address',
-  type: 'string',
-  required: true,
-  displayOptions: {
-    show: {
-      resource: ['account'],
-      operation: ['getAccountTransactions'],
-    },
-  },
-  default: '',
-  description: 'The Ethereum account address for transaction history',
-  placeholder: '0x742Fc23Fa02644A08d83AbdAbB6d5d3B8301Fde4',
 },
 {
   displayName: 'Start Block',
@@ -507,6 +558,20 @@ export class Ethereum implements INodeType {
   },
   default: 'desc',
   description: 'Sort order for transactions',
+},
+{
+  displayName: 'Tag',
+  name: 'tag',
+  type: 'string',
+  displayOptions: {
+    show: {
+      resource: ['account'],
+      operation: ['getAccountBalance', 'getMultiAccountBalance'],
+    },
+  },
+  default: 'latest',
+  placeholder: 'latest, earliest, pending, or block number',
+  description: 'Block tag to query',
 },
 {
   displayName: 'Signed Transaction Data',
@@ -643,6 +708,21 @@ export class Ethereum implements INodeType {
   placeholder: '25,50,75',
 },
 {
+  displayName: 'Transaction Hash',
+  name: 'txhash',
+  type: 'string',
+  required: true,
+  displayOptions: {
+    show: {
+      resource: ['transaction'],
+      operation: ['getTransactionStatus'],
+    },
+  },
+  default: '',
+  description: 'The transaction hash to check status',
+  placeholder: '0x...',
+},
+{
   displayName: 'Contract Address',
   name: 'to',
   type: 'string',
@@ -679,7 +759,7 @@ export class Ethereum implements INodeType {
   displayOptions: {
     show: {
       resource: ['smartContract'],
-      operation: ['call'],
+      operation: ['call', 'getStorageAt'],
     },
   },
   default: 'latest',
@@ -687,13 +767,13 @@ export class Ethereum implements INodeType {
 },
 {
   displayName: 'Contract Address',
-  name: 'to',
+  name: 'contractAddress',
   type: 'string',
   required: true,
   displayOptions: {
     show: {
       resource: ['smartContract'],
-      operation: ['estimateGas'],
+      operation: ['estimateGas', 'getLogs', 'getContractABI', 'getSourceCode', 'getStorageAt', 'verifyContract'],
     },
   },
   default: '',
@@ -742,6 +822,20 @@ export class Ethereum implements INodeType {
   },
   default: '0x0',
   description: 'The value to send with the transaction (hex)',
+},
+{
+  displayName: 'Storage Position',
+  name: 'position',
+  type: 'string',
+  required: true,
+  displayOptions: {
+    show: {
+      resource: ['smartContract'],
+      operation: ['getStorageAt'],
+    },
+  },
+  default: '',
+  description: 'Storage position (hex-encoded)',
 },
 {
   displayName: 'From Block',
@@ -798,21 +892,6 @@ export class Ethereum implements INodeType {
   placeholder: '["0x..."]',
 },
 {
-  displayName: 'Contract Address',
-  name: 'address',
-  type: 'string',
-  required: true,
-  displayOptions: {
-    show: {
-      resource: ['smartContract'],
-      operation: ['getContractABI'],
-    },
-  },
-  default: '',
-  description: 'The verified contract address',
-  placeholder: '0x...',
-},
-{
   displayName: 'API Key',
   name: 'apikey',
   type: 'string',
@@ -820,40 +899,119 @@ export class Ethereum implements INodeType {
   displayOptions: {
     show: {
       resource: ['smartContract'],
-      operation: ['getContractABI'],
+      operation: ['getContractABI', 'getSourceCode'],
     },
   },
   default: '',
   description: 'Etherscan API key',
 },
 {
-  displayName: 'Contract Address',
-  name: 'address',
+  displayName: 'Contract Name',
+  name: 'contractName',
   type: 'string',
   required: true,
   displayOptions: {
     show: {
       resource: ['smartContract'],
-      operation: ['getSourceCode'],
+      operation: ['verifyContract'],
     },
   },
   default: '',
-  description: 'The verified contract address',
-  placeholder: '0x...',
+  description: 'Name of the contract',
 },
 {
-  displayName: 'API Key',
-  name: 'apikey',
+  displayName: 'Compiler Version',
+  name: 'compilerVersion',
   type: 'string',
   required: true,
   displayOptions: {
     show: {
       resource: ['smartContract'],
-      operation: ['getSourceCode'],
+      operation: ['verifyContract'],
     },
   },
   default: '',
-  description: 'Etherscan API key',
+  description: 'Solidity compiler version used',
+},
+{
+  displayName: 'Optimization Used',
+  name: 'optimizationUsed',
+  type: 'boolean',
+  displayOptions: {
+    show: {
+      resource: ['smartContract'],
+      operation: ['verifyContract'],
+    },
+  },
+  default: false,
+  description: 'Whether optimization was used during compilation',
+},
+{
+  displayName: 'Optimization Runs',
+  name: 'optimizationRuns',
+  type: 'number',
+  displayOptions: {
+    show: {
+      resource: ['smartContract'],
+      operation: ['verifyContract'],
+      optimizationUsed: [true],
+    },
+  },
+  default: 200,
+  description: 'Number of optimization runs',
+},
+{
+  displayName: 'Constructor Arguments',
+  name: 'constructorArguments',
+  type: 'string',
+  displayOptions: {
+    show: {
+      resource: ['smartContract'],
+      operation: ['verifyContract'],
+    },
+  },
+  default: '',
+  description: 'ABI-encoded constructor arguments',
+},
+{
+  displayName: 'Source Code',
+  name: 'sourceCode',
+  type: 'string',
+  required: true,
+  displayOptions: {
+    show: {
+      resource: ['smartContract'],
+      operation: ['verifyContract'],
+    },
+  },
+  default: '',
+  description: 'Contract source code',
+},
+{
+  displayName: 'Library Name',
+  name: 'libraryName',
+  type: 'string',
+  displayOptions: {
+    show: {
+      resource: ['smartContract'],
+      operation: ['verifyContract'],
+    },
+  },
+  default: '',
+  description: 'Library name (if applicable)',
+},
+{
+  displayName: 'Library Address',
+  name: 'libraryAddress',
+  type: 'string',
+  displayOptions: {
+    show: {
+      resource: ['smartContract'],
+      operation: ['verifyContract'],
+    },
+  },
+  default: '',
+  description: 'Library address (if applicable)',
 },
 {
   displayName: 'Block Number',
@@ -950,6 +1108,20 @@ export class Ethereum implements INodeType {
   },
   default: '0x0',
   description: 'The uncle index position as hex string',
+},
+{
+  displayName: 'Block Number',
+  name: 'blockno',
+  type: 'number',
+  default: 1,
+  required: true,
+  displayOptions: {
+    show: {
+      resource: ['block'],
+      operation: ['getBlockReward'],
+    },
+  },
+  description: 'Block number for reward calculation',
 },
 {
   displayName: 'Contract Address',
@@ -1211,7 +1383,7 @@ export class Ethereum implements INodeType {
   displayOptions: {
     show: {
       resource: ['ens'],
-      operation: ['resolveName'],
+      operation: ['resolveName', 'getResolver', 'getRecord', 'getOwner', 'getTextRecords'],
     },
   },
   default: '',
@@ -1225,7 +1397,7 @@ export class Ethereum implements INodeType {
   displayOptions: {
     show: {
       resource: ['ens'],
-      operation: ['resolveName'],
+      operation: ['resolveName', 'reverseResolve', 'getResolver', 'getRecord', 'getOwner', 'getTextRecords'],
     },
   },
   default: 'latest',
@@ -1246,64 +1418,6 @@ export class Ethereum implements INodeType {
   default: '',
   placeholder: '0x742d35Cc6aB88027f82F5e6F5B5d81e30C8F1A8B',
   description: 'The Ethereum address to reverse resolve',
-},
-{
-  displayName: 'Block Number',
-  name: 'blockNumber',
-  type: 'string',
-  displayOptions: {
-    show: {
-      resource: ['ens'],
-      operation: ['reverseResolve'],
-    },
-  },
-  default: 'latest',
-  placeholder: 'latest',
-  description: 'Block number to query at (latest, earliest, pending, or hex value)',
-},
-{
-  displayName: 'ENS Name',
-  name: 'ensName',
-  type: 'string',
-  required: true,
-  displayOptions: {
-    show: {
-      resource: ['ens'],
-      operation: ['getResolver'],
-    },
-  },
-  default: '',
-  placeholder: 'vitalik.eth',
-  description: 'The ENS name to get resolver for',
-},
-{
-  displayName: 'Block Number',
-  name: 'blockNumber',
-  type: 'string',
-  displayOptions: {
-    show: {
-      resource: ['ens'],
-      operation: ['getResolver'],
-    },
-  },
-  default: 'latest',
-  placeholder: 'latest',
-  description: 'Block number to query at (latest, earliest, pending, or hex value)',
-},
-{
-  displayName: 'ENS Name',
-  name: 'ensName',
-  type: 'string',
-  required: true,
-  displayOptions: {
-    show: {
-      resource: ['ens'],
-      operation: ['getRecord'],
-    },
-  },
-  default: '',
-  placeholder: 'vitalik.eth',
-  description: 'The ENS name to get record for',
 },
 {
   displayName: 'Record Type',
@@ -1344,27 +1458,13 @@ export class Ethereum implements INodeType {
   displayOptions: {
     show: {
       resource: ['ens'],
-      operation: ['getRecord'],
+      operation: ['getRecord', 'getTextRecords'],
       recordType: ['text'],
     },
   },
   default: 'email',
   placeholder: 'email',
   description: 'The text record key (e.g., email, url, description)',
-},
-{
-  displayName: 'Block Number',
-  name: 'blockNumber',
-  type: 'string',
-  displayOptions: {
-    show: {
-      resource: ['ens'],
-      operation: ['getRecord'],
-    },
-  },
-  default: 'latest',
-  placeholder: 'latest',
-  description: 'Block number to query at (latest, earliest, pending, or hex value)',
 },
 {
   displayName: 'From Block',
@@ -1619,6 +1719,48 @@ async function executeAccountOperations(
           break;
         }
 
+        case 'getAccountBalance': {
+          const address = this.getNodeParameter('address', i) as string;
+          const tag = this.getNodeParameter('tag', i) as string;
+
+          const options: any = {
+            method: 'GET',
+            url: 'https://api.etherscan.io/api',
+            qs: {
+              module: 'account',
+              action: 'balance',
+              address: address,
+              tag: tag,
+              apikey: credentials.etherscanApiKey || credentials.apiKey,
+            },
+            json: true,
+          };
+
+          result = await this.helpers.httpRequest(options) as any;
+          break;
+        }
+
+        case 'getMultiAccountBalance': {
+          const addresses = this.getNodeParameter('addresses', i) as string;
+          const tag = this.getNodeParameter('tag', i) as string;
+
+          const options: any = {
+            method: 'GET',
+            url: 'https://api.etherscan.io/api',
+            qs: {
+              module: 'account',
+              action: 'balancemulti',
+              address: addresses,
+              tag: tag,
+              apikey: credentials.etherscanApiKey || credentials.apiKey,
+            },
+            json: true,
+          };
+
+          result = await this.helpers.httpRequest(options) as any;
+          break;
+        }
+
         default:
           throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
       }
@@ -1860,6 +2002,54 @@ async function executeTransactionOperations(
           break;
         }
 
+        case 'maxPriorityFeePerGas': {
+          const requestBody = {
+            jsonrpc: '2.0',
+            method: 'eth_maxPriorityFeePerGas',
+            params: [],
+            id: 1,
+          };
+
+          const options: any = {
+            method: 'POST',
+            url: credentials.baseUrl,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody),
+            json: false,
+          };
+
+          const response = await this.helpers.httpRequest(options) as any;
+          const parsedResponse = JSON.parse(response);
+          
+          if (parsedResponse.error) {
+            throw new NodeApiError(this.getNode(), parsedResponse.error);
+          }
+          
+          result = parsedResponse.result;
+          break;
+        }
+
+        case 'getTransactionStatus': {
+          const txhash = this.getNodeParameter('txhash', i) as string;
+
+          const options: any = {
+            method: 'GET',
+            url: 'https://api.etherscan.io/api',
+            qs: {
+              module: 'transaction',
+              action: 'gettxreceiptstatus',
+              txhash: txhash,
+              apikey: credentials.apiKey,
+            },
+            json: true,
+          };
+
+          result = await this.helpers.httpRequest(options) as any;
+          break;
+        }
+
         default:
           throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
       }
@@ -1926,1208 +2116,4 @@ async function executeSmartContractOperations(
                 },
                 blockNumber,
               ],
-              id: 1,
-            }),
-          };
-
-          result = await this.helpers.httpRequest(options) as any;
-          break;
-        }
-
-        case 'estimateGas': {
-          const to = this.getNodeParameter('to', i) as string;
-          const from = this.getNodeParameter('from', i) as string;
-          const data = this.getNodeParameter('data', i) as string;
-          const value = this.getNodeParameter('value', i) as string;
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'eth_estimateGas',
-              params: [
-                {
-                  to: to,
-                  from: from,
-                  data: data,
-                  value: value,
-                },
-              ],
-              id: 1,
-            }),
-          };
-
-          result = await this.helpers.httpRequest(options) as any;
-          break;
-        }
-
-        case 'getLogs': {
-          const fromBlock = this.getNodeParameter('fromBlock', i) as string;
-          const toBlock = this.getNodeParameter('toBlock', i) as string;
-          const address = this.getNodeParameter('address', i) as string;
-          const topics = this.getNodeParameter('topics', i) as string;
-
-          const filterParams: any = {
-            fromBlock: fromBlock,
-            toBlock: toBlock,
-          };
-
-          if (address) {
-            filterParams.address = address;
-          }
-
-          if (topics) {
-            try {
-              filterParams.topics = JSON.parse(topics);
-            } catch (error: any) {
-              throw new NodeOperationError(this.getNode(), 'Invalid topics JSON format');
-            }
-          }
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'eth_getLogs',
-              params: [filterParams],
-              id: 1,
-            }),
-          };
-
-          result = await this.helpers.httpRequest(options) as any;
-          break;
-        }
-
-        case 'getContractABI': {
-          const address = this.getNodeParameter('address', i) as string;
-          const apikey = this.getNodeParameter('apikey', i) as string;
-
-          const options: any = {
-            method: 'GET',
-            url: 'https://api.etherscan.io/api',
-            qs: {
-              module: 'contract',
-              action: 'getabi',
-              address: address,
-              apikey: apikey,
-            },
-          };
-
-          result = await this.helpers.httpRequest(options) as any;
-          break;
-        }
-
-        case 'getSourceCode': {
-          const address = this.getNodeParameter('address', i) as string;
-          const apikey = this.getNodeParameter('apikey', i) as string;
-
-          const options: any = {
-            method: 'GET',
-            url: 'https://api.etherscan.io/api',
-            qs: {
-              module: 'contract',
-              action: 'getsourcecode',
-              address: address,
-              apikey: apikey,
-            },
-          };
-
-          result = await this.helpers.httpRequest(options) as any;
-          break;
-        }
-
-        default:
-          throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
-      }
-
-      returnData.push({ json: result, pairedItem: { item: i } });
-    } catch (error: any) {
-      if (this.continueOnFail()) {
-        returnData.push({ 
-          json: { error: error.message }, 
-          pairedItem: { item: i } 
-        });
-      } else {
-        throw new NodeApiError(this.getNode(), error);
-      }
-    }
-  }
-
-  return returnData;
-}
-
-async function executeBlockOperations(
-  this: IExecuteFunctions,
-  items: INodeExecutionData[],
-): Promise<INodeExecutionData[]> {
-  const returnData: INodeExecutionData[] = [];
-  const operation = this.getNodeParameter('operation', 0) as string;
-  const credentials = await this.getCredentials('ethereumApi') as any;
-
-  for (let i = 0; i < items.length; i++) {
-    try {
-      let result: any;
-      
-      switch (operation) {
-        case 'getBlockByNumber': {
-          const blockNumber = this.getNodeParameter('blockNumber', i) as string;
-          const fullTransactions = this.getNodeParameter('fullTransactions', i) as boolean;
-          
-          const rpcPayload = {
-            jsonrpc: '2.0',
-            method: 'eth_getBlockByNumber',
-            params: [blockNumber, fullTransactions],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(rpcPayload),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const parsedResponse = JSON.parse(response);
-          
-          if (parsedResponse.error) {
-            throw new NodeApiError(this.getNode(), parsedResponse.error);
-          }
-          
-          result = parsedResponse.result;
-          break;
-        }
-        
-        case 'getBlockByHash': {
-          const blockHash = this.getNodeParameter('blockHash', i) as string;
-          const fullTransactions = this.getNodeParameter('fullTransactions', i) as boolean;
-          
-          const rpcPayload = {
-            jsonrpc: '2.0',
-            method: 'eth_getBlockByHash',
-            params: [blockHash, fullTransactions],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(rpcPayload),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const parsedResponse = JSON.parse(response);
-          
-          if (parsedResponse.error) {
-            throw new NodeApiError(this.getNode(), parsedResponse.error);
-          }
-          
-          result = parsedResponse.result;
-          break;
-        }
-        
-        case 'blockNumber': {
-          const rpcPayload = {
-            jsonrpc: '2.0',
-            method: 'eth_blockNumber',
-            params: [],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(rpcPayload),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const parsedResponse = JSON.parse(response);
-          
-          if (parsedResponse.error) {
-            throw new NodeApiError(this.getNode(), parsedResponse.error);
-          }
-          
-          result = {
-            blockNumber: parsedResponse.result,
-            blockNumberDecimal: parseInt(parsedResponse.result, 16),
-          };
-          break;
-        }
-        
-        case 'getBlockTransactionCountByNumber': {
-          const blockNumber = this.getNodeParameter('blockNumber', i) as string;
-          
-          const rpcPayload = {
-            jsonrpc: '2.0',
-            method: 'eth_getBlockTransactionCountByNumber',
-            params: [blockNumber],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(rpcPayload),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const parsedResponse = JSON.parse(response);
-          
-          if (parsedResponse.error) {
-            throw new NodeApiError(this.getNode(), parsedResponse.error);
-          }
-          
-          result = {
-            transactionCount: parsedResponse.result,
-            transactionCountDecimal: parseInt(parsedResponse.result, 16),
-          };
-          break;
-        }
-        
-        case 'getUncleByBlockNumberAndIndex': {
-          const blockNumber = this.getNodeParameter('blockNumber', i) as string;
-          const uncleIndex = this.getNodeParameter('uncleIndex', i) as string;
-          
-          const rpcPayload = {
-            jsonrpc: '2.0',
-            method: 'eth_getUncleByBlockNumberAndIndex',
-            params: [blockNumber, uncleIndex],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(rpcPayload),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const parsedResponse = JSON.parse(response);
-          
-          if (parsedResponse.error) {
-            throw new NodeApiError(this.getNode(), parsedResponse.error);
-          }
-          
-          result = parsedResponse.result;
-          break;
-        }
-        
-        default:
-          throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
-      }
-      
-      returnData.push({ json: result, pairedItem: { item: i } });
-    } catch (error: any) {
-      if (this.continueOnFail()) {
-        returnData.push({ json: { error: error.message }, pairedItem: { item: i } });
-      } else {
-        throw error;
-      }
-    }
-  }
-  
-  return returnData;
-}
-
-async function executeTokenOperations(
-  this: IExecuteFunctions,
-  items: INodeExecutionData[],
-): Promise<INodeExecutionData[]> {
-  const returnData: INodeExecutionData[] = [];
-  const operation = this.getNodeParameter('operation', 0) as string;
-  const credentials = await this.getCredentials('ethereumApi') as any;
-
-  // Helper function to generate method data for ERC-20 calls
-  function generateMethodData(methodSignature: string, params: string[] = []): string {
-    const methodId = methodSignature.slice(0, 10);
-    const encodedParams = params.map(param => param.padStart(64, '0')).join('');
-    return methodId + encodedParams;
-  }
-
-  // Helper function to decode hex response to decimal
-  function hexToDecimal(hex: string): string {
-    return parseInt(hex, 16).toString();
-  }
-
-  // Helper function to decode hex response to string
-  function hexToString(hex: string): string {
-    let str = '';
-    for (let i = 0; i < hex.length; i += 2) {
-      const hexChar = hex.substr(i, 2);
-      if (hexChar !== '00') {
-        str += String.fromCharCode(parseInt(hexChar, 16));
-      }
-    }
-    return str.trim();
-  }
-
-  for (let i = 0; i < items.length; i++) {
-    try {
-      let result: any;
-      
-      switch (operation) {
-        case 'getTokenBalance': {
-          const contractAddress = this.getNodeParameter('contractAddress', i) as string;
-          const address = this.getNodeParameter('address', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i) as string;
-          
-          // ERC-20 balanceOf method signature: balanceOf(address)
-          const methodData = generateMethodData('0x70a08231', [address.replace('0x', '').padStart(64, '0')]);
-          
-          const requestBody = {
-            jsonrpc: '2.0',
-            method: 'eth_call',
-            params: [
-              {
-                to: contractAddress,
-                data: methodData,
-              },
-              blockNumber === 'latest' || blockNumber === 'earliest' || blockNumber === 'pending' ? blockNumber : blockNumber,
-            ],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const responseData = JSON.parse(response);
-          
-          if (responseData.error) {
-            throw new NodeApiError(this.getNode(), responseData.error);
-          }
-
-          const balance = hexToDecimal(responseData.result);
-          result = {
-            contractAddress,
-            address,
-            balance,
-            balanceHex: responseData.result,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'getTokenMetadata': {
-          const contractAddress = this.getNodeParameter('contractAddress', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i) as string;
-          
-          // Get name, symbol, and decimals
-          const nameData = generateMethodData('0x06fdde03'); // name()
-          const symbolData = generateMethodData('0x95d89b41'); // symbol()
-          const decimalsData = generateMethodData('0x313ce567'); // decimals()
-
-          const requests = [
-            { method: 'name', data: nameData },
-            { method: 'symbol', data: symbolData },
-            { method: 'decimals', data: decimalsData },
-          ];
-
-          const metadata: any = {};
-
-          for (const request of requests) {
-            const requestBody = {
-              jsonrpc: '2.0',
-              method: 'eth_call',
-              params: [
-                {
-                  to: contractAddress,
-                  data: request.data,
-                },
-                blockNumber,
-              ],
-              id: 1,
-            };
-
-            const options: any = {
-              method: 'POST',
-              url: credentials.baseUrl,
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(requestBody),
-              json: false,
-            };
-
-            const response = await this.helpers.httpRequest(options) as any;
-            const responseData = JSON.parse(response);
-            
-            if (responseData.error) {
-              throw new NodeApiError(this.getNode(), responseData.error);
-            }
-
-            if (request.method === 'decimals') {
-              metadata[request.method] = parseInt(responseData.result, 16);
-            } else {
-              // For name and symbol, decode the hex string
-              const hex = responseData.result.slice(2);
-              metadata[request.method] = hexToString(hex);
-            }
-          }
-
-          result = {
-            contractAddress,
-            name: metadata.name,
-            symbol: metadata.symbol,
-            decimals: metadata.decimals,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'getTransferEvents': {
-          const contractAddress = this.getNodeParameter('contractAddress', i) as string;
-          const fromBlock = this.getNodeParameter('fromBlock', i) as string;
-          const toBlock = this.getNodeParameter('toBlock', i) as string;
-          
-          // ERC-20 Transfer event signature: Transfer(address,address,uint256)
-          const transferEventTopic = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
-
-          const requestBody = {
-            jsonrpc: '2.0',
-            method: 'eth_getLogs',
-            params: [
-              {
-                fromBlock,
-                toBlock,
-                address: contractAddress,
-                topics: [transferEventTopic],
-              },
-            ],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const responseData = JSON.parse(response);
-          
-          if (responseData.error) {
-            throw new NodeApiError(this.getNode(), responseData.error);
-          }
-
-          result = {
-            contractAddress,
-            fromBlock,
-            toBlock,
-            events: responseData.result,
-            eventCount: responseData.result.length,
-          };
-          break;
-        }
-
-        case 'getTokenBalanceEtherscan': {
-          const contractAddress = this.getNodeParameter('contractAddress', i) as string;
-          const address = this.getNodeParameter('address', i) as string;
-          const tag = this.getNodeParameter('tag', i) as string;
-
-          const options: any = {
-            method: 'GET',
-            url: 'https://api.etherscan.io/api',
-            qs: {
-              module: 'account',
-              action: 'tokenbalance',
-              contractaddress: contractAddress,
-              address: address,
-              tag: tag,
-              apikey: credentials.apiKey,
-            },
-            json: true,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          
-          if (response.status !== '1') {
-            throw new NodeApiError(this.getNode(), { message: response.message || 'Etherscan API error' });
-          }
-
-          result = {
-            contractAddress,
-            address,
-            balance: response.result,
-            tag,
-          };
-          break;
-        }
-
-        case 'getTokenSupply': {
-          const contractAddress = this.getNodeParameter('contractAddress', i) as string;
-
-          const options: any = {
-            method: 'GET',
-            url: 'https://api.etherscan.io/api',
-            qs: {
-              module: 'stats',
-              action: 'tokensupply',
-              contractaddress: contractAddress,
-              apikey: credentials.apiKey,
-            },
-            json: true,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          
-          if (response.status !== '1') {
-            throw new NodeApiError(this.getNode(), { message: response.message || 'Etherscan API error' });
-          }
-
-          result = {
-            contractAddress,
-            totalSupply: response.result,
-          };
-          break;
-        }
-
-        default:
-          throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
-      }
-
-      returnData.push({ json: result, pairedItem: { item: i } });
-
-    } catch (error: any) {
-      if (this.continueOnFail()) {
-        returnData.push({ json: { error: error.message }, pairedItem: { item: i } });
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  return returnData;
-}
-
-async function executeNftOperations(
-  this: IExecuteFunctions,
-  items: INodeExecutionData[],
-): Promise<INodeExecutionData[]> {
-  const returnData: INodeExecutionData[] = [];
-  const operation = this.getNodeParameter('operation', 0) as string;
-  const credentials = await this.getCredentials('ethereumApi') as any;
-
-  for (let i = 0; i < items.length; i++) {
-    try {
-      let result: any;
-
-      switch (operation) {
-        case 'getNftOwner': {
-          const to = this.getNodeParameter('to', i) as string;
-          const data = this.getNodeParameter('data', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i) as string;
-
-          const requestBody = {
-            jsonrpc: '2.0',
-            method: 'eth_call',
-            params: [
-              {
-                to,
-                data,
-              },
-              blockNumber,
-            ],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const responseData = JSON.parse(response);
-          
-          if (responseData.error) {
-            throw new NodeApiError(this.getNode(), responseData.error);
-          }
-
-          result = {
-            owner: responseData.result,
-            contractAddress: to,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'getNftMetadataUri': {
-          const to = this.getNodeParameter('to', i) as string;
-          const data = this.getNodeParameter('data', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i) as string;
-
-          const requestBody = {
-            jsonrpc: '2.0',
-            method: 'eth_call',
-            params: [
-              {
-                to,
-                data,
-              },
-              blockNumber,
-            ],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const responseData = JSON.parse(response);
-          
-          if (responseData.error) {
-            throw new NodeApiError(this.getNode(), responseData.error);
-          }
-
-          result = {
-            metadataUri: responseData.result,
-            contractAddress: to,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'getNftBalance': {
-          const to = this.getNodeParameter('to', i) as string;
-          const data = this.getNodeParameter('data', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i) as string;
-
-          const requestBody = {
-            jsonrpc: '2.0',
-            method: 'eth_call',
-            params: [
-              {
-                to,
-                data,
-              },
-              blockNumber,
-            ],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const responseData = JSON.parse(response);
-          
-          if (responseData.error) {
-            throw new NodeApiError(this.getNode(), responseData.error);
-          }
-
-          result = {
-            balance: responseData.result,
-            contractAddress: to,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'getNftTransferEvents': {
-          const fromBlock = this.getNodeParameter('fromBlock', i) as string;
-          const toBlock = this.getNodeParameter('toBlock', i) as string;
-          const address = this.getNodeParameter('address', i, '') as string;
-          const topicsParam = this.getNodeParameter('topics', i, '') as string;
-
-          let topics: any = [];
-          if (topicsParam) {
-            try {
-              topics = JSON.parse(topicsParam);
-            } catch (error: any) {
-              throw new NodeOperationError(this.getNode(), 'Invalid topics JSON format');
-            }
-          }
-
-          const filterParams: any = {
-            fromBlock,
-            toBlock,
-          };
-
-          if (address) {
-            filterParams.address = address;
-          }
-
-          if (topics.length > 0) {
-            filterParams.topics = topics;
-          }
-
-          const requestBody = {
-            jsonrpc: '2.0',
-            method: 'eth_getLogs',
-            params: [filterParams],
-            id: 1,
-          };
-
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestBody),
-            json: false,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          const responseData = JSON.parse(response);
-          
-          if (responseData.error) {
-            throw new NodeApiError(this.getNode(), responseData.error);
-          }
-
-          result = {
-            logs: responseData.result,
-            fromBlock,
-            toBlock,
-            address,
-          };
-          break;
-        }
-
-        case 'getNftTransfers': {
-          const address = this.getNodeParameter('address', i) as string;
-          const startblock = this.getNodeParameter('startblock', i, '0') as string;
-          const endblock = this.getNodeParameter('endblock', i, '99999999') as string;
-          const page = this.getNodeParameter('page', i, 1) as number;
-          const offset = this.getNodeParameter('offset', i, 100) as number;
-
-          const params = new URLSearchParams({
-            module: 'account',
-            action: 'tokennfttx',
-            address,
-            startblock,
-            endblock,
-            page: page.toString(),
-            offset: offset.toString(),
-            apikey: credentials.apiKey,
-          });
-
-          const options: any = {
-            method: 'GET',
-            url: `https://api.etherscan.io/api?${params.toString()}`,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            json: true,
-          };
-
-          result = await this.helpers.httpRequest(options) as any;
-          
-          if (result.status === '0' && result.message !== 'No transactions found') {
-            throw new NodeApiError(this.getNode(), result.result || result.message);
-          }
-          break;
-        }
-
-        default:
-          throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
-      }
-
-      returnData.push({ 
-        json: result, 
-        pairedItem: { item: i } 
-      });
-
-    } catch (error: any) {
-      if (this.continueOnFail()) {
-        returnData.push({ 
-          json: { error: error.message }, 
-          pairedItem: { item: i } 
-        });
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  return returnData;
-}
-
-async function executeEnsOperations(
-  this: IExecuteFunctions,
-  items: INodeExecutionData[],
-): Promise<INodeExecutionData[]> {
-  const returnData: INodeExecutionData[] = [];
-  const operation = this.getNodeParameter('operation', 0) as string;
-  const credentials = await this.getCredentials('ethereumApi') as any;
-
-  // ENS Registry and Resolver contract addresses
-  const ENS_REGISTRY = '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e';
-  const ENS_PUBLIC_RESOLVER = '0x231b0Ee14048e9dCcD1d247744d114a4EB5E8E63';
-
-  // Helper function to create namehash
-  function namehash(name: string): string {
-    let node = '0x0000000000000000000000000000000000000000000000000000000000000000';
-    if (name !== '') {
-      const labels = name.split('.');
-      for (let i = labels.length - 1; i >= 0; i--) {
-        const labelHash = require('crypto').createHash('keccak256').update(labels[i]).digest('hex');
-        node = require('crypto').createHash('keccak256').update(Buffer.from(node + labelHash, 'hex')).digest('hex');
-        node = '0x' + node;
-      }
-    }
-    return node;
-  }
-
-  // Helper function to encode function calls
-  function encodeFunctionCall(signature: string, params: any[] = []): string {
-    const hash = require('crypto').createHash('keccak256').update(signature).digest('hex');
-    const methodId = hash.substring(0, 8);
-    let encodedParams = '';
-    
-    for (const param of params) {
-      if (typeof param === 'string' && param.startsWith('0x')) {
-        encodedParams += param.substring(2).padStart(64, '0');
-      } else if (typeof param === 'string') {
-        const hex = Buffer.from(param, 'utf8').toString('hex');
-        encodedParams += hex.padStart(64, '0');
-      }
-    }
-    
-    return '0x' + methodId + encodedParams;
-  }
-
-  for (let i = 0; i < items.length; i++) {
-    try {
-      let result: any;
-
-      switch (operation) {
-        case 'resolveName': {
-          const ensName = this.getNodeParameter('ensName', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i, 'latest') as string;
-          
-          const nodeHash = namehash(ensName);
-          const data = encodeFunctionCall('addr(bytes32)', [nodeHash]);
-          
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${credentials.apiKey}`,
-            },
-            body: {
-              jsonrpc: '2.0',
-              method: 'eth_call',
-              params: [
-                {
-                  to: ENS_PUBLIC_RESOLVER,
-                  data: data,
-                },
-                blockNumber === 'latest' ? 'latest' : blockNumber,
-              ],
-              id: 1,
-            },
-            json: true,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          
-          if (response.error) {
-            throw new NodeApiError(this.getNode(), response.error);
-          }
-
-          let address = response.result;
-          if (address && address !== '0x' && address.length > 2) {
-            address = '0x' + address.substring(26);
-          }
-
-          result = {
-            ensName,
-            address,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'reverseResolve': {
-          const address = this.getNodeParameter('address', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i, 'latest') as string;
-          
-          const reverseRecord = address.toLowerCase().substring(2) + '.addr.reverse';
-          const nodeHash = namehash(reverseRecord);
-          const data = encodeFunctionCall('name(bytes32)', [nodeHash]);
-          
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${credentials.apiKey}`,
-            },
-            body: {
-              jsonrpc: '2.0',
-              method: 'eth_call',
-              params: [
-                {
-                  to: ENS_PUBLIC_RESOLVER,
-                  data: data,
-                },
-                blockNumber === 'latest' ? 'latest' : blockNumber,
-              ],
-              id: 1,
-            },
-            json: true,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          
-          if (response.error) {
-            throw new NodeApiError(this.getNode(), response.error);
-          }
-
-          let ensName = '';
-          if (response.result && response.result !== '0x') {
-            const hex = response.result.substring(2);
-            ensName = Buffer.from(hex, 'hex').toString('utf8').replace(/\0/g, '');
-          }
-
-          result = {
-            address,
-            ensName,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'getResolver': {
-          const ensName = this.getNodeParameter('ensName', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i, 'latest') as string;
-          
-          const nodeHash = namehash(ensName);
-          const data = encodeFunctionCall('resolver(bytes32)', [nodeHash]);
-          
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${credentials.apiKey}`,
-            },
-            body: {
-              jsonrpc: '2.0',
-              method: 'eth_call',
-              params: [
-                {
-                  to: ENS_REGISTRY,
-                  data: data,
-                },
-                blockNumber === 'latest' ? 'latest' : blockNumber,
-              ],
-              id: 1,
-            },
-            json: true,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          
-          if (response.error) {
-            throw new NodeApiError(this.getNode(), response.error);
-          }
-
-          let resolverAddress = response.result;
-          if (resolverAddress && resolverAddress.length > 2) {
-            resolverAddress = '0x' + resolverAddress.substring(26);
-          }
-
-          result = {
-            ensName,
-            resolverAddress,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'getRecord': {
-          const ensName = this.getNodeParameter('ensName', i) as string;
-          const recordType = this.getNodeParameter('recordType', i) as string;
-          const blockNumber = this.getNodeParameter('blockNumber', i, 'latest') as string;
-          
-          const nodeHash = namehash(ensName);
-          let data: string;
-          
-          switch (recordType) {
-            case 'text':
-              const textKey = this.getNodeParameter('textKey', i) as string;
-              data = encodeFunctionCall('text(bytes32,string)', [nodeHash, textKey]);
-              break;
-            case 'contenthash':
-              data = encodeFunctionCall('contenthash(bytes32)', [nodeHash]);
-              break;
-            case 'abi':
-              data = encodeFunctionCall('ABI(bytes32,uint256)', [nodeHash, '0']);
-              break;
-            case 'pubkey':
-              data = encodeFunctionCall('pubkey(bytes32)', [nodeHash]);
-              break;
-            default:
-              throw new NodeOperationError(this.getNode(), `Unknown record type: ${recordType}`);
-          }
-          
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${credentials.apiKey}`,
-            },
-            body: {
-              jsonrpc: '2.0',
-              method: 'eth_call',
-              params: [
-                {
-                  to: ENS_PUBLIC_RESOLVER,
-                  data: data,
-                },
-                blockNumber === 'latest' ? 'latest' : blockNumber,
-              ],
-              id: 1,
-            },
-            json: true,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          
-          if (response.error) {
-            throw new NodeApiError(this.getNode(), response.error);
-          }
-
-          let recordValue = response.result;
-          if (recordType === 'text' && recordValue && recordValue !== '0x') {
-            const hex = recordValue.substring(2);
-            recordValue = Buffer.from(hex, 'hex').toString('utf8').replace(/\0/g, '');
-          }
-
-          result = {
-            ensName,
-            recordType,
-            recordValue,
-            blockNumber,
-          };
-          break;
-        }
-
-        case 'getEvents': {
-          const fromBlock = this.getNodeParameter('fromBlock', i, 'latest') as string;
-          const toBlock = this.getNodeParameter('toBlock', i, 'latest') as string;
-          const contractAddress = this.getNodeParameter('contractAddress', i, ENS_REGISTRY) as string;
-          const topics = this.getNodeParameter('topics', i, []) as any;
-          
-          const options: any = {
-            method: 'POST',
-            url: credentials.baseUrl,
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${credentials.apiKey}`,
-            },
-            body: {
-              jsonrpc: '2.0',
-              method: 'eth_getLogs',
-              params: [
-                {
-                  fromBlock: fromBlock === 'latest' ? 'latest' : fromBlock,
-                  toBlock: toBlock === 'latest' ? 'latest' : toBlock,
-                  address: contractAddress,
-                  topics: Array.isArray(topics) ? topics : [],
-                },
-              ],
-              id: 1,
-            },
-            json: true,
-          };
-
-          const response = await this.helpers.httpRequest(options) as any;
-          
-          if (response.error) {
-            throw new NodeApiError(this.getNode(), response.error);
-          }
-
-          result = {
-            events: response.result || [],
-            fromBlock,
-            toBlock,
-            contractAddress,
-          };
-          break;
-        }
-
-        default:
-          throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
-      }
-
-      returnData.push({
-        json: result,
-        pairedItem: { item: i },
-      });
-
-    } catch (error: any) {
-      if (this.continueOnFail()) {
-        returnData.push({
-          json: { error: error.message },
-          pairedItem: { item: i },
-        });
-      } else {
-        throw error;
-      }
-    }
-  }
-
-  return returnData;
-}
+              id:
