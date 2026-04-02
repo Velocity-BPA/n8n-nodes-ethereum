@@ -8,25 +8,25 @@
 >
 > For licensing information, visit https://velobpa.com/licensing or contact licensing@velobpa.com.
 
-This n8n community node provides comprehensive Ethereum blockchain integration with 7 resources including Account, Transaction, SmartContract, Block, Token, NFT, and ENS operations, enabling automated blockchain interactions, DeFi workflows, and Web3 data processing within your n8n automations.
+A comprehensive n8n community node for interacting with the Ethereum blockchain, providing access to 6 key resources including accounts, transactions, blocks, smart contracts, tokens, and ENS domains. Execute blockchain operations, query data, deploy contracts, and manage digital assets directly within your n8n workflows.
 
 ![n8n Community Node](https://img.shields.io/badge/n8n-Community%20Node-blue)
 ![License](https://img.shields.io/badge/license-BSL--1.1-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
-![Ethereum](https://img.shields.io/badge/Ethereum-Compatible-627EEA)
-![Web3](https://img.shields.io/badge/Web3-Ready-F16822)
-![DeFi](https://img.shields.io/badge/DeFi-Enabled-9C27B0)
+![Ethereum](https://img.shields.io/badge/Ethereum-Mainnet%20%7C%20Testnets-627EEA)
+![Web3](https://img.shields.io/badge/Web3-Compatible-green)
+![Smart Contracts](https://img.shields.io/badge/Smart%20Contracts-Supported-orange)
 
 ## Features
 
-- **Account Management** - Get account balances, transaction history, and manage wallet operations
-- **Transaction Processing** - Send transactions, check status, estimate gas fees, and monitor confirmations
-- **Smart Contract Integration** - Deploy contracts, call functions, read contract state, and listen for events
-- **Block Operations** - Retrieve block data, analyze blockchain metrics, and track network statistics
-- **Token Operations** - Handle ERC-20 tokens, check balances, transfers, and allowances
-- **NFT Support** - Manage ERC-721/ERC-1155 tokens, metadata retrieval, and ownership tracking
-- **ENS Resolution** - Resolve Ethereum Name Service domains, reverse lookups, and registration management
-- **Multi-Network Support** - Compatible with Ethereum mainnet, testnets, and Layer 2 solutions
+- **Multi-Network Support** - Connect to Ethereum mainnet, testnets (Goerli, Sepolia), and custom networks
+- **Account Management** - Query balances, transaction history, and account details with full wallet integration
+- **Transaction Operations** - Send ETH, execute contract calls, and monitor transaction status with gas optimization
+- **Block Data Access** - Retrieve block information, transaction lists, and blockchain statistics
+- **Smart Contract Integration** - Deploy, interact with, and monitor smart contracts with ABI support
+- **Token Operations** - Manage ERC-20, ERC-721, and ERC-1155 tokens with transfer and balance queries
+- **ENS Resolution** - Resolve Ethereum Name Service domains and reverse lookups
+- **Gas Fee Optimization** - Automatic gas estimation and fee optimization for all transactions
 
 ## Installation
 
@@ -61,11 +61,10 @@ n8n start
 
 | Field | Description | Required |
 |-------|-------------|----------|
-| **RPC URL** | Ethereum RPC endpoint (Infura, Alchemy, or custom node) | Yes |
-| **API Key** | API key for your RPC provider | Yes |
-| **Private Key** | Private key for transaction signing (optional) | No |
-| **Network** | Network name (mainnet, goerli, sepolia, polygon, etc.) | Yes |
-| **Gas Price Strategy** | Auto, fast, standard, or custom gas pricing | No |
+| API Key | Your Ethereum node provider API key (Infura, Alchemy, etc.) | ✅ |
+| Network | Target Ethereum network (mainnet, goerli, sepolia, custom) | ✅ |
+| Custom RPC URL | Custom Ethereum node RPC endpoint (if using custom network) | ⚪ |
+| Private Key | Wallet private key for transaction signing (optional, for write operations) | ⚪ |
 
 ## Resources & Operations
 
@@ -73,120 +72,108 @@ n8n start
 
 | Operation | Description |
 |-----------|-------------|
-| **Get Balance** | Retrieve ETH balance for an address |
-| **Get Transaction History** | Fetch transaction history for an account |
-| **Get Nonce** | Get the current nonce for an address |
-| **Create Account** | Generate a new Ethereum account |
-| **Import Account** | Import account from private key or mnemonic |
+| Get Balance | Retrieve ETH balance for an account address |
+| Get Transaction Count | Get the nonce/transaction count for an account |
+| Get Transaction History | Fetch transaction history for an account |
+| Create Account | Generate a new Ethereum account with private key |
+| Import Account | Import an existing account using private key |
 
 ### 2. Transaction
 
 | Operation | Description |
 |-----------|-------------|
-| **Send Transaction** | Send ETH or contract transactions |
-| **Get Transaction** | Retrieve transaction details by hash |
-| **Get Receipt** | Get transaction receipt and status |
-| **Estimate Gas** | Estimate gas costs for transactions |
-| **Get Pending** | List pending transactions |
-| **Cancel Transaction** | Cancel pending transaction with higher gas |
+| Send ETH | Transfer ETH between accounts |
+| Get Transaction | Retrieve transaction details by hash |
+| Get Receipt | Get transaction receipt and status |
+| Estimate Gas | Estimate gas required for a transaction |
+| Get Pending Transactions | Fetch pending transactions from mempool |
+| Cancel Transaction | Cancel a pending transaction by sending with higher gas |
 
-### 3. SmartContract
-
-| Operation | Description |
-|-----------|-------------|
-| **Deploy Contract** | Deploy new smart contract |
-| **Call Function** | Execute contract function (read/write) |
-| **Get Events** | Retrieve contract event logs |
-| **Get ABI** | Fetch contract ABI from verified contracts |
-| **Verify Contract** | Verify contract source code |
-| **Get Storage** | Read contract storage slots |
-
-### 4. Block
+### 3. Block
 
 | Operation | Description |
 |-----------|-------------|
-| **Get Block** | Retrieve block data by number or hash |
-| **Get Latest Block** | Get the most recent block |
-| **Get Block Range** | Fetch multiple blocks in range |
-| **Get Uncle Blocks** | Retrieve uncle/ommer blocks |
-| **Get Block Stats** | Get network statistics and metrics |
+| Get Block | Retrieve block information by number or hash |
+| Get Latest Block | Get the most recent block |
+| Get Block Transactions | Fetch all transactions in a specific block |
+| Get Block Range | Retrieve multiple blocks within a range |
+| Subscribe to New Blocks | Monitor for new blocks (webhook support) |
+
+### 4. Smart Contract
+
+| Operation | Description |
+|-----------|-------------|
+| Deploy Contract | Deploy a new smart contract to the blockchain |
+| Call Method | Execute a read-only contract method |
+| Send Transaction | Execute a state-changing contract method |
+| Get Contract Events | Retrieve contract event logs |
+| Estimate Gas for Call | Estimate gas for contract method execution |
+| Get Contract Code | Retrieve deployed contract bytecode |
 
 ### 5. Token
 
 | Operation | Description |
 |-----------|-------------|
-| **Get Balance** | Check ERC-20 token balance |
-| **Transfer** | Send tokens to another address |
-| **Get Allowance** | Check spending allowance |
-| **Approve** | Set spending allowance |
-| **Get Token Info** | Retrieve token metadata (name, symbol, decimals) |
-| **Get Transfers** | List token transfer history |
+| Get Balance | Check token balance for an account |
+| Transfer | Send tokens between accounts |
+| Get Token Info | Retrieve token metadata (name, symbol, decimals) |
+| Get Allowance | Check token spending allowance |
+| Approve Spending | Approve token spending for another account |
+| Get Transfer History | Fetch token transfer history |
 
-### 6. Nft
-
-| Operation | Description |
-|-----------|-------------|
-| **Get NFT** | Retrieve NFT metadata and ownership |
-| **Transfer NFT** | Transfer NFT to another address |
-| **Get Collection** | List NFTs in a collection |
-| **Get Owner NFTs** | Get all NFTs owned by address |
-| **Approve NFT** | Approve NFT for transfer |
-| **Set Approval For All** | Set collection-wide approval |
-
-### 7. Ens
+### 6. ENS
 
 | Operation | Description |
 |-----------|-------------|
-| **Resolve Name** | Resolve ENS name to address |
-| **Reverse Lookup** | Get ENS name from address |
-| **Get Records** | Fetch ENS text records |
-| **Set Records** | Update ENS text records |
-| **Register Name** | Register new ENS domain |
-| **Renew Name** | Extend ENS registration |
+| Resolve Name | Resolve ENS domain to Ethereum address |
+| Reverse Lookup | Get ENS domain from Ethereum address |
+| Get Text Record | Retrieve ENS text records |
+| Set Text Record | Update ENS text records |
+| Get Content Hash | Retrieve IPFS/Swarm content hash |
+| Check Availability | Check if ENS domain is available |
 
 ## Usage Examples
 
 ```javascript
-// Get ETH balance for an address
+// Get ETH balance for an account
 {
   "resource": "account",
   "operation": "getBalance",
-  "address": "0x742d35Cc6634C0532925a3b8D4d8d6E8ba46a3c7",
+  "address": "0x742d35Cc6536C5f7f0b14b724b3b2a60b89A2ABA",
   "blockTag": "latest"
 }
 ```
 
 ```javascript
-// Send ERC-20 token transfer
+// Send ETH transaction
 {
-  "resource": "token",
-  "operation": "transfer",
-  "contractAddress": "0xA0b86a33E6441c41C7c31bc5a9F2d3CB7D7bcf8a",
-  "to": "0x8ba1f109551bD432803012645Hac136c",
-  "amount": "100.5",
-  "from": "0x742d35Cc6634C0532925a3b8D4d8d6E8ba46a3c7"
+  "resource": "transaction", 
+  "operation": "sendETH",
+  "to": "0x742d35Cc6536C5f7f0b14b724b3b2a60b89A2ABA",
+  "value": "0.1",
+  "gasLimit": "21000",
+  "gasPrice": "20"
 }
 ```
 
 ```javascript
-// Call smart contract function
+// Call smart contract method
 {
   "resource": "smartContract",
-  "operation": "callFunction",
-  "contractAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
-  "functionName": "balanceOf",
-  "parameters": ["0x742d35Cc6634C0532925a3b8D4d8d6E8ba46a3c7"],
-  "abi": [...contractAbi]
+  "operation": "callMethod",
+  "contractAddress": "0xA0b86a33E6441885C19312448218ECa9e5FeC5F3",
+  "methodName": "balanceOf",
+  "methodParameters": ["0x742d35Cc6536C5f7f0b14b724b3b2a60b89A2ABA"],
+  "abi": "[{\"inputs\":[{\"name\":\"account\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"type\":\"function\"}]"
 }
 ```
 
 ```javascript
-// Resolve ENS name
+// Resolve ENS domain
 {
   "resource": "ens",
   "operation": "resolveName",
-  "ensName": "vitalik.eth",
-  "recordType": "address"
+  "domain": "vitalik.eth"
 }
 ```
 
@@ -194,12 +181,12 @@ n8n start
 
 | Error | Description | Solution |
 |-------|-------------|----------|
-| **Invalid RPC URL** | RPC endpoint is unreachable or invalid | Verify RPC URL and API key are correct |
-| **Insufficient Funds** | Account lacks ETH for gas fees | Add ETH to account or reduce gas limit |
-| **Transaction Reverted** | Smart contract execution failed | Check contract function parameters and state |
-| **Nonce Too Low** | Transaction nonce is outdated | Use current account nonce or wait for pending transactions |
-| **Gas Price Too Low** | Transaction not mined due to low gas | Increase gas price or use network suggested price |
-| **Rate Limited** | Too many API requests | Implement delays or upgrade RPC provider plan |
+| Insufficient Funds | Account balance too low for transaction | Check account balance and add funds |
+| Gas Limit Too Low | Transaction requires more gas than specified | Increase gas limit or use gas estimation |
+| Invalid Address | Provided address is not a valid Ethereum address | Verify address format and checksum |
+| Network Timeout | Connection to Ethereum node failed | Check network connection and API key |
+| Contract Not Found | Smart contract does not exist at address | Verify contract address and deployment |
+| Nonce Too Low | Transaction nonce is lower than expected | Use current account nonce or increment manually |
 
 ## Development
 
@@ -244,5 +231,5 @@ Contributions are welcome! Please ensure:
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/Velocity-BPA/n8n-nodes-ethereum/issues)
-- **Ethereum Documentation**: [ethereum.org/developers](https://ethereum.org/developers/)
-- **Web3.js Guide**: [web3js.readthedocs.io](https://web3js.readthedocs.io/)
+- **Ethereum Documentation**: [ethereum.org/developers](https://ethereum.org/developers)
+- **Web3.js Guide**: [web3js.readthedocs.io](https://web3js.readthedocs.io)
