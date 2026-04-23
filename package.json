@@ -2,7 +2,7 @@
   "name": "@velocity-bpa/n8n-nodes-ethereum",
   "version": "1.0.0",
   "description": "n8n community node for Ethereum blockchain operations",
-  "license": "bsl-catalog",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://n8n.io",
   "author": {
     "name": "Velocity BPA",
@@ -43,7 +43,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-n8n-nodes-base": "^1.16.1",
     "gulp": "^4.0.2",
-    "n8n-workflow": "*",
+    "n8n-workflow": "1.57.0",
     "prettier": "^3.3.2",
     "typescript": "~5.5.3"
   },
