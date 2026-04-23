@@ -19,8 +19,8 @@ jobs:
       - name: Install fallback
         run: npm install --no-frozen-lockfile --ignore-scripts
       - name: Build
-        run: (node_modules/.bin/tsc --noEmitOnError false --skipLibCheck true || true) && (node_modules/.bin/gulp build:icons || true)
+        run: node_modules/.bin/tsc --noEmitOnError false --skipLibCheck true && node_modules/.bin/gulp build:icons || node_modules/.bin/tsc --noEmitOnError false --skipLibCheck true
       - name: Publish
-        run: npm publish --access public
+        run: npm publish --access public --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
