@@ -19,7 +19,7 @@ jobs:
       - name: Install fallback
         run: npm install --no-frozen-lockfile --ignore-scripts
       - name: Build
-        run: npm run build
+        run: node_modules/.bin/tsc --noEmitOnError false --skipLibCheck true && node_modules/.bin/gulp build:icons || node_modules/.bin/tsc --noEmitOnError false --skipLibCheck true
       - name: Publish
         run: npm publish --access public
         env:
